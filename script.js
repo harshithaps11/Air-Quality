@@ -1,89 +1,100 @@
-/*const response = await fetch(`${apiUrl}?city=${city}`, {
-    headers: {
-        'Authorization': 'Bearer YOUR_API_TOKEN'
+// Your API Key
+const apiKey = 'DAPQ4KAAQM5TYDFX2OP6NBGELFLHJ6DHU5NA';
+
+// Elements
+const searchInput = document.querySelector('.search-box input');
+const searchButton = document.querySelector('.search-box button');
+const cityNameElement = document.querySelector('.city');
+const temperatureElement = document.querySelector('.temperature');
+const weatherDescriptionElement = document.querySelector('.weather-description');
+const weatherDetails = document.querySelector('.weather-details');
+
+// Function to fetch weather data from API
+async function getWeatherData(city) {
+    try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === "404") {
+            alert('City not found');
+            return;
+        }
+
+        // Extract weather data
+        const { name, main, weather, wind, air_quality } = data;
+
+        // Update the UI with weather data
+        cityNameElement.textContent = name;
+        temperatureElement.textContent = `${main.temp}°C`;
+        weatherDescriptionElement.textContent = weather[0].description;
+
+        // PM2.5, PM10, Nitrogen Dioxide, Carbon Monoxide (using placeholder values here)
+        const pm25 = '12 µg/m³'; // placeholder value
+        const pm10 = '25 µg/m³'; // placeholder value
+        const nitrogenDioxide = '40 µg/m³'; // placeholder value
+        const carbonMonoxide = '0.8 ppm'; // placeholder value
+
+        // Update weather details
+        updateWeatherDetails(pm25, pm10, nitrogenDioxide, carbonMonoxide);
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        alert('Something went wrong! Please try again later.');
+    }
+}
+
+// Function to update the weather details grid
+function updateWeatherDetails(pm25, pm10, nitrogenDioxide, carbonMonoxide) {
+    const detailItems = [
+        { label: 'PM2.5', value: pm25 },
+        { label: 'PM10', value: pm10 },
+        { label: 'Nitrogen Dioxide', value: nitrogenDioxide },
+        { label: 'Carbon Monoxide', value: carbonMonoxide },
+    ];
+
+    // Clear existing weather details
+    weatherDetails.innerHTML = '';
+
+    // Add new detail items
+    detailItems.forEach(item => {
+        const detailDiv = document.createElement('div');
+        detailDiv.classList.add('detail-item');
+
+        const label = document.createElement('div');
+        label.classList.add('detail-label');
+        label.textContent = item.label;
+
+        const value = document.createElement('div');
+        value.classList.add('detail-value');
+        value.textContent = item.value;
+
+        detailDiv.appendChild(label);
+        detailDiv.appendChild(value);
+        weatherDetails.appendChild(detailDiv);
+    });
+}
+
+// Event listener for search button click
+searchButton.addEventListener('click', () => {
+    const city = searchInput.value.trim();
+    if (city) {
+        getWeatherData(city);
+    } else {
+        alert('Please enter a city name');
     }
 });
-*/
 
-    // Get references to DOM elements
-    const searchButton = document.querySelector('.search-box button');
-    const cityInput = document.querySelector('.search-box input');
-    const cityName = document.querySelector('.city');
-    const temperature = document.querySelector('.temperature');
-    const weatherDescription = document.querySelector('.weather-description');
-    const weatherDetails = document.querySelector('.weather-details');
-
-    // Your custom API URL (replace with your actual API endpoint)
-    const apiUrl = 'https://your-api-url.com/weather'; // Replace with your API URL
-
-    // Fetch weather data based on city name
-    async function getWeatherData(city) {
-        try {
-            // Call your API to get weather data for the given city
-            const response = await fetch(`${apiUrl}?city=${city}`);
-            
-            if (!response.ok) {
-                throw new Error('City not found or API error');
-            }
-
-            const data = await response.json();
-
-            // Check if the data structure matches what we expect (adjust according to your API response)
-            if (!data || !data.weather || !data.weather.main || !data.weather.description) {
-                alert('Invalid data returned from the API');
-                return;
-            }
-
-            // Display weather data on the page
-            cityName.textContent = data.weather.cityName; // Assuming your API returns 'cityName'
-            temperature.textContent = `${Math.round(data.weather.main.temp)}°C`;
-            weatherDescription.textContent = data.weather.description;
-
-            // Update the weather details (air quality, etc.)
-            const detailsHtml = `
-                <div class="detail-item">
-                    <div class="detail-label">PM2.5</div>
-                    <div class="detail-value">${data.airQuality.pm25 || 'Data not available'} µg/m³</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">PM10</div>
-                    <div class="detail-value">${data.airQuality.pm10 || 'Data not available'} µg/m³</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Nitrogen Dioxide</div>
-                    <div class="detail-value">${data.airQuality.no2 || 'Data not available'} µg/m³</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Carbon Monoxide</div>
-                    <div class="detail-value">${data.airQuality.co || 'Data not available'} ppm</div>
-                </div>
-            `;
-            weatherDetails.innerHTML = detailsHtml;
-
-        } catch (error) {
-            console.error('Error fetching weather data:', error);
-            alert('An error occurred. Please try again later.');
-        }
-    }
-
-    // Event listener for the search button
-    searchButton.addEventListener('click', function () {
-        const city = cityInput.value.trim();
-
+// Event listener for enter key press
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const city = searchInput.value.trim();
         if (city) {
             getWeatherData(city);
         } else {
             alert('Please enter a city name');
         }
-    });
+    }
+});
 
-    // Optional: Handle Enter key press in the search input
-    cityInput.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            searchButton.click();
-        }
-    });
-
-    // Optional: Default city to show weather on load
-    getWeatherData('London'); // Replace 'London' with any default city
-
+// Initialize with a default city (optional)
+getWeatherData('London');
