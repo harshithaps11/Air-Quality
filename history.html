@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asmitha - Weather History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0072B5, #00B4D8);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-tab {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-tab.active, .nav-tab:hover {
+            background: #00B4D8;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            margin-top: 80px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .history-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .filter-dropdown {
+            padding: 0.5rem 1rem;
+            border: 2px solid #00B4D8;
+            border-radius: 25px;
+            background: transparent;
+            color: #333;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .history-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .history-date {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: rgba(240, 248, 255, 0.85);
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .graph-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            height: 300px;
+            position: relative;
+        }
+
+        .graph-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-tabs">
+        <a href="index.html" class="nav-tab">Home</a>
+        <a href="air_quality.html" class="nav-tab">Air Quality</a>
+        <a href="history.html" class="nav-tab active">History</a>
+        <a href="profile.html" class="nav-tab">Profile</a>
+        
+    </nav>
+
+    <div class="container">
+        <div class="history-header">
+            <h1 class="history-title">Weather History</h1>
+            <select class="filter-dropdown">
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="3months">Last 3 Months</option>
+            </select>
+        </div>
+
+        <div class="history-grid">
+            <div class="history-card">
+                <div class="history-date">March 15, 2024</div>
+                <div class="history-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Temperature</div>
+                        <div class="detail-value">23°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">PM2.5</div>
+                        <div class="detail-value">15 µg/m³</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">PM10</div>
+                        <div class="detail-value">28 µg/m³</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">NO₂</div>
+                        <div class="detail-value">35 µg/m³</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card">
+                <div class="history-date">March 14, 2024</div>
+                <div class="history-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Temperature</div>
+                        <div class="detail-value">21°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">PM2.5</div>
+                        <div class="detail-value">12 µg/m³</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">PM10</div>
+                        <div class="detail-value">25 µg/m³</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">NO₂</div>
+                        <div class="detail-value">38 µg/m³</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <div class="graph-title">Temperature Trend</div>
+            <!-- Graph will be added here using JavaScript/Chart.js -->
+        </div>
+    </div>
+</body>
+</html> 

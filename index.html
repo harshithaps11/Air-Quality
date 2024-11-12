@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asmitha - Weather Monitoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0072B5, #00B4D8);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Navigation Bar */
+        .nav-tabs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-tab {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-tab.active, .nav-tab:hover {
+            background: #00B4D8;
+            color: #fff;
+        }
+
+        /* Cloud animations */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            width: 200px;
+            height: 60px;
+            top: 20%;
+            left: -200px;
+            animation: float-1 25s infinite linear;
+        }
+
+        .cloud-1::before {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 40px;
+        }
+
+        .cloud-1::after {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: 90px;
+        }
+
+        .cloud-2 {
+            width: 160px;
+            height: 50px;
+            top: 60%;
+            left: -160px;
+            animation: float-2 20s infinite linear;
+            animation-delay: -10s;
+        }
+
+        .cloud-2::before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 30px;
+        }
+
+        .cloud-2::after {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 70px;
+        }
+
+        @keyframes float-1 {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        @keyframes float-2 {
+            0% { transform: translateX(-160px); }
+            100% { transform: translateX(calc(100vw + 160px)); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            margin-top: 80px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            background: #f0f0f0;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button {
+            padding: 1rem;
+            background: #00B4D8;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #0072B5;
+        }
+
+        .weather-info {
+            text-align: center;
+        }
+
+        .city {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .temperature {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #0077B6;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .weather-description {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(240, 248, 255, 0.85);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-tabs">
+        <a href="index.html" class="nav-tab active">Home</a>
+        <a href="air_quality.html" class="nav-tab">Air Quality</a>
+        <a href="history.html" class="nav-tab">History</a>
+        <a href="profile.html" class="nav-tab">Profile</a>  
+    </nav>
+    
+    
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="text" placeholder="Search for a city...">
+            <button>Search</button>
+        </div>
+
+        <div class="weather-info">
+            <div class="city">Today</div>
+            <div class="temperature">21°C</div>
+            <div class="weather-description">Partly Cloudy</div>
+
+            <div class="weather-details">
+                <div class="detail-item">
+                    <div class="detail-label">PM2.5</div>
+                    <div class="detail-value">12 µg/m³</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">PM10</div>
+                    <div class="detail-value">25 µg/m³</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Nitrogen Dioxide</div>
+                    <div class="detail-value">40 µg/m³</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Carbon Monoxide</div>
+                    <div class="detail-value">0.8 ppm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
